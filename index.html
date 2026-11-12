@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TYPE KARO - Real Typing Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none}
+body{min-height:100vh;background:radial-gradient(1200px 600px at 50% 0%, #3a3a3a 0%, #1a1a1a 55%, #0a0a0a 100%);display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;padding:10px}
+.desk{width:100%;max-width:1000px;background:linear-gradient(180deg,#7a4a28,#5a3418 40%,#3d2210);border-radius:16px;padding:18px 14px 22px;box-shadow:inset 0 2px 0 #ffffff33, 0 30px 60px #000;position:relative}
+.monitor{background:#111;border-radius:10px;padding:10px 10px 10px;box-shadow:0 20px 40px #000000aa, inset 0 1px 0 #ffffff22;position:relative}
+.screen{background:#e8e8e8;border-radius:6px;overflow:hidden;position:relative;min-height:560px;box-shadow:inset 0 0 0 2px #000}
+.window{position:absolute;inset:0;background:#f8f9fa;display:flex;flex-direction:column}
+.win-top{background:#1f2937;color:white;display:flex;align-items:center;gap:8px;padding:8px 10px}
+.win-top b{font-size:12px;letter-spacing:.3px}
+.win-top .step{font-size:10px;background:#2563eb;padding:4px 8px;border-radius:5px;font-weight:700;white-space:nowrap}
+.top-btns{margin-left:auto;display:flex;gap:5px}
+.top-btn{width:30px;height:30px;border-radius:6px;border:1px solid #ffffff33;background:#374151;color:white;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:22px 16px;text-align:center;overflow:auto}
+.big-title{font-size:44px;font-weight:900;color:#111827;line-height:1;letter-spacing:-1px}
+.big-title span{color:#2563eb}
+.sub{font-size:13px;color:#6b7280;margin:10px 0 18px;line-height:1.6}
+.card-grid{display:flex;gap:12px;flex-direction:column;width:100%;max-width:440px}
+.big-card{background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px 16px;cursor:pointer;box-shadow:0 4px 14px #00000012, 0 1px 0 #fff;display:flex;gap:14px;align-items:center;text-align:left}
+.big-card:active{transform:scale(.98)}
+.big-card .emoji{font-size:38px;width:56px;height:56px;background:#eff6ff;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.big-card h3{font-size:17px;font-weight:800;letter-spacing:.2px}
+.big-card p{font-size:12px;color:#6b7280;line-height:1.5;margin-top:3px}
+.big-card.blue{border-left:5px solid #2563eb}
+.big-card.yellow{border-left:5px solid #facc15}
+.big-card.green{border-left:5px solid #22c55e}
+.big-card.pink{border-left:5px solid #ec4899}
+.small-btn{padding:10px 20px;border-radius:999px;border:1px solid #d1d5db;background:white;font-size:11px;font-weight:700;cursor:pointer;margin-top:16px}
+.hud{display:flex;gap:6px;padding:10px;background:white;border-bottom:1px solid #e5e7eb}
+.h{flex:1;background:#111827;color:white;border-radius:8px;padding:8px;text-align:center}
+.h b{display:block;font-size:8px;color:#facc15;letter-spacing:1px}
+.h span{font-size:16px;font-weight:800;font-family:'JetBrains Mono'}
+.task-box{background:#111827;border-radius:12px;margin:12px;padding:24px;min-height:100px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 2px 10px #00000066}
+.task{font-family:'JetBrains Mono';font-size:36px;font-weight:800;letter-spacing:2px;color:white;word-break:break-word}
+.task .done{color:#22c55e}
+.task .now{background:#ef4444;color:white;padding:3px 12px;border-radius:8px;box-shadow:0 0 18px #ef4444}
+.task .next{color:#6b7280}
+.kb{background:linear-gradient(180deg,#2a2a2a,#171717);padding:14px 10px 14px;margin:0 12px 12px;border-radius:12px;box-shadow:0 10px 20px #00000055, inset 0 1px 0 #ffffff22}
+.row{display:flex;gap:5px;justify-content:center;margin:4px 0}
+.key{flex:1;max-width:62px;height:52px;background:linear-gradient(180deg,#ffffff,#d1d5db);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#111827;cursor:pointer;box-shadow:0 4px 0 #9ca3af, 0 5px 8px #00000055;position:relative}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 #9ca3af}
+.key.red{background:linear-gradient(180deg,#ff5a5a,#ef4444) !important;color:white !important;box-shadow:0 4px 0 #991b1b, 0 0 22px #ef4444 !important;transform:scale(1.05)}
+.key.hit{background:linear-gradient(180deg,#4ade80,#22c55e) !important;color:white !important}
+.space-row{display:flex;justify-content:center;margin-top:8px;padding:0 4px}
+.key.space{flex:none !important;width:100% !important;max-width:420px !important;height:56px !important;background:linear-gradient(180deg,#ffffff,#cbd5e1) !important;border-radius:8px !important;font-size:13px !important;font-weight:800 !important;letter-spacing:4px !important;color:#334155 !important;box-shadow:0 5px 0 #94a3b8, 0 7px 12px #00000066 !important;border:1px solid #e2e8f0}
+.key.space:active{transform:translateY(4px) !important;box-shadow:0 1px 0 #94a3b8 !important}
+.key.space.red{background:linear-gradient(180deg,#ff5a5a,#ef4444) !important;color:white !important;box-shadow:0 5px 0 #991b1b, 0 0 25px #ef4444 !important;border-color:#fca5a5 !important}
+.key.space.hit{background:linear-gradient(180deg,#4ade80,#22c55e) !important;color:white !important}
+.bar{height:6px;background:#e5e7eb;margin:0 12px;border-radius:10px;overflow:hidden}
+.bar div{height:100%;background:#22c55e;width:0%}
+.bubble{position:absolute;top:52px;left:50%;transform:translateX(-50%);background:#111827;color:white;font-size:11px;font-weight:700;padding:7px 12px;border-radius:999px;display:none;z-index:10;box-shadow:0 4px 12px #00000033}
+.bubble.show{display:block}
+.app{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:46px;font-weight:900;color:#facc15;text-shadow:0 0 20px gold,0 4px 0 #000;z-index:99;pointer-events:none}
+.app.show{animation:pop .9s forwards}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0);opacity:0}20%{transform:translate(-50%,-50%) scale(1.3);opacity:1}100%{transform:translate(-50%,-90%) scale(.8);opacity:0}}
+.hidden{display:none !important}
+.set-row{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:13px;display:flex;justify-content:space-between;align-items:center;width:100%;max-width:520px;margin:5px 0;gap:8px}
+.set-row b{font-size:12px;text-align:left}
+.set-row small{display:block;color:#6b7280;font-size:11px;text-align:left}
+.opt-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.opt{padding:7px 10px;border-radius:999px;border:1px solid #e5e7eb;background:white;font-size:10px;font-weight:700;cursor:pointer}
+.opt.active{background:#111827;color:white}
+.toggle{width:52px;height:26px;background:#22c55e;border-radius:999px;position:relative;cursor:pointer;flex-shrink:0}
+.toggle.off{background:#9ca3af}
+.toggle::after{content:'';position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:3px;left:28px;box-shadow:0 1px 3px #00000033}
+.toggle.off::after{left:4px}
+.stand{width:180px;height:14px;background:#111;margin:10px auto 0;border-radius:0 0 8px 8px}
+.base{width:340px;height:10px;background:#111;margin:0 auto;border-radius:8px;box-shadow:0 8px 16px #000}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="desk"><div class="monitor"><div class="screen"><div class="window">
+<div class="win-top"><b>⌨️ TYPE KARO</b><span class="step" id="topStep">Step 1 - Language</span><div class="top-btns"><button class="top-btn" id="bVoice">🎤</button><button class="top-btn" id="bSound">🔊</button><button class="top-btn" id="bHome">🏠</button><button class="top-btn" onclick="goStep(99)" style="width:auto;padding:0 8px;font-size:10px;font-weight:700">⚙️ SET</button></div></div>
+
+<div class="center" id="step1">
+<div class="big-title">TYPE <span>KARO</span></div>
+<div class="sub">Which Language Do You Want?<br>Select Your Language</div>
+<div class="card-grid">
+<div class="big-card blue" onclick="chooseLang()"><div class="emoji">🇬🇧</div><div><h3>ENGLISH</h3><p>Learn in English • All words in English<br>C - A - R - CAR</p></div></div>
+<div class="big-card yellow" onclick="chooseLang()"><div class="emoji">🌍</div><div><h3>ENGLISH EASY</h3><p>Easy English • For Kids<br>Step By Step</p></div></div>
+</div>
+</div>
+
+<div class="center hidden" id="step2">
+<div class="big-title">How Do You<br><span>Want To Learn?</span></div>
+<div class="sub">Do you want to do it yourself<br>or Computer will teach you?</div>
+<div class="card-grid">
+<div class="big-card green" onclick="chooseMode('self')"><div class="emoji">✋</div><div><h3>MYSELF</h3><p>I will type myself<br>My own choice</p></div></div>
+<div class="big-card pink" onclick="chooseMode('computer')"><div class="emoji">🤖</div><div><h3>COMPUTER TEACH</h3><p>Computer will teach me<br>Step by step</p></div></div>
+</div>
+<button class="small-btn" onclick="goStep(1)">⬅ BACK</button>
+</div>
+
+<div class="center hidden" id="step3">
+<div class="big-title">What Do You<br><span>Want?</span></div>
+<div class="sub">What should Computer give you?</div>
+<div class="card-grid">
+<div class="big-card blue" onclick="startGame('words')"><div class="emoji">🔤</div><div><h3>WORDS</h3><p>Small Words • CAT, DOG, CAR<br>20,000 Words</p></div></div>
+<div class="big-card yellow" onclick="startGame('sentences')"><div class="emoji">📝</div><div><h3>SENTENCES</h3><p>Full Sentence • TOYOTA SUPRA IS FAST<br>10,000 Sentences</p></div></div>
+</div>
+<button class="small-btn" onclick="goStep(2)">⬅ BACK</button>
+</div>
+
+<div class="center hidden" id="step99">
+<div class="big-title" style="font-size:28px;">⚙️ SETTINGS</div>
+<div class="sub">Change All Game Settings Here - All In English</div>
+<div class="set-row"><div><b>SOUND</b><small>Game sound on or off</small></div><div class="toggle" id="tSound" onclick="toggleSound()"></div></div>
+<div class="set-row"><div><b>VOICE</b><small>Computer voice on or off</small></div><div class="toggle" id="tVoice" onclick="toggleVoice()"></div></div>
+<div class="set-row"><div><b>VOICE SPEED</b><small>How fast computer speaks</small></div><div class="opt-group"><button class="opt" id="spSlow" onclick="setSpeed('slow')">SLOW</button><button class="opt active" id="spNormal" onclick="setSpeed('normal')">NORMAL</button><button class="opt" id="spFast" onclick="setSpeed('fast')">FAST</button></div></div>
+<div class="set-row"><div><b>DIFFICULTY</b><small>Easy for kids, Hard for experts</small></div><div class="opt-group"><button class="opt active" id="dEasy" onclick="setDiff('easy')">EASY</button><button class="opt" id="dMed" onclick="setDiff('medium')">MEDIUM</button><button class="opt" id="dHard" onclick="setDiff('hard')">HARD</button></div></div>
+<div class="set-row"><div><b>MODE</b><small>Who will type?</small></div><div class="opt-group"><button class="opt" id="mSelf" onclick="setModeSetting('self')">MYSELF</button><button class="opt active" id="mComp" onclick="setModeSetting('computer')">COMPUTER TEACH</button></div></div>
+<div class="set-row"><div><b>TYPE</b><small>Words or Sentences?</small></div><div class="opt-group"><button class="opt" id="tWords" onclick="setTypeSetting('words')">WORDS</button><button class="opt active" id="tSent" onclick="setTypeSetting('sentences')">SENTENCES</button></div></div>
+<div class="set-row"><div><b>LANGUAGE</b><small>Game language</small></div><div class="opt-group"><button class="opt active">ENGLISH</button></div></div>
+<button class="small-btn" onclick="goStep(1)" style="background:#111827;color:white;border:none;">✅ SAVE & GO HOME</button>
+</div>
+
+<div class="hidden" id="step4" style="display:flex;flex-direction:column;flex:1;width:100%">
+<div style="display:flex;gap:6px;padding:8px 10px 0;align-items:center;"><button class="small-btn" style="margin:0;" onclick="goStep(3)">⬅ CHANGE</button><span style="font-size:11px;" id="gameLabel">COMPUTER MODE - SENTENCES</span></div>
+<div class="hud"><div class="h"><b>WPM</b><span id="wpm">0</span></div><div class="h"><b>ACCURACY</b><span id="acc">100%</span></div><div class="h"><b>SCORE</b><span id="score">0</span></div><div class="h"><b>STREAK</b><span id="streak">0</span></div></div>
+<div class="bar"><div id="barFill"></div></div>
+<div class="bubble" id="bubble">C</div>
+<div class="task-box"><div class="task" id="task"></div></div>
+<div class="kb" id="kb"></div>
+</div>
+
+</div>
+</div></div><div class="stand"></div><div class="base"></div></div>
+
+<script>
+let lang='en', mode='computer', gameType='sentences', voiceSpeed='normal', difficulty='easy';
+let voiceOn=true, soundOn=true;
+function goStep(n){ [1,2,3,99].forEach(i=>{let el=document.getElementById('step'+i); if(el) el.classList.toggle('hidden', i!==n)}); document.getElementById('step4').classList.toggle('hidden', n!==4); if(n!==4) document.getElementById('step4').style.display='none'; else document.getElementById('step4').style.display='flex'; document.getElementById('topStep').innerText = n===1?'Step 1 - Language': n===2?'Step 2 - Mode': n===3?'Step 3 - Words / Sentences': n===99?'Settings':'Step 4 - Game'; if(n===99) speak('Settings. Change all settings here.'); }
+function chooseLang(){ speak('English Selected. Now, do you want to do it yourself, or computer will teach you?'); goStep(2); }
+function chooseMode(m){ mode=m; setModeSetting(m); speak(m==='self' ? 'Okay, you will do it yourself. Choose words or sentences.' : 'Okay, computer will teach you. Choose words or sentences.'); goStep(3); }
+function startGame(type){ gameType=type; setTypeSetting(type); document.getElementById('gameLabel').innerText = (mode==='computer' ? 'COMPUTER MODE - ' : 'MYSELF MODE - ') + type.toUpperCase() + ' - ' + difficulty.toUpperCase(); goStep(4); if(!window.game) window.game = new Game(); window.game.list = type==='words' ? window.game.words : window.game.sentences; window.game.used.clear(); window.game.newTask(); speak(type==='words' ? 'Words Mode' : 'Sentences Mode'); }
+function toggleSound(){ soundOn=!soundOn; document.getElementById('tSound').classList.toggle('off',!soundOn); document.getElementById('bSound').innerText=soundOn?'🔊':'🔈'; speak('Sound '+(soundOn?'On':'Off')); }
+function toggleVoice(){ voiceOn=!voiceOn; document.getElementById('tVoice').classList.toggle('off',!voiceOn); document.getElementById('bVoice').innerText=voiceOn?'🎤':'🔇'; if(voiceOn) speak('Voice On'); }
+function setSpeed(s){ voiceSpeed=s; ['spSlow','spNormal','spFast'].forEach(id=>document.getElementById(id).classList.remove('active')); document.getElementById(s==='slow'?'spSlow':s==='fast'?'spFast':'spNormal').classList.add('active'); speak('Voice Speed '+s); }
+function setDiff(d){ difficulty=d; ['dEasy','dMed','dHard'].forEach(id=>document.getElementById(id).classList.remove('active')); document.getElementById(d==='easy'?'dEasy':d==='medium'?'dMed':'dHard').classList.add('active'); speak('Difficulty '+d); }
+function setModeSetting(m){ mode=m; document.getElementById('mSelf').classList.toggle('active',m==='self'); document.getElementById('mComp').classList.toggle('active',m==='computer'); }
+function setTypeSetting(t){ gameType=t; document.getElementById('tWords').classList.toggle('active',t==='words'); document.getElementById('tSent').classList.toggle('active',t==='sentences'); }
+function getRate(){ return voiceSpeed==='slow'?0.4: voiceSpeed==='fast'?0.9:0.6; }
+function speak(t){ if(!voiceOn) return; try{ speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=getRate(); speechSynthesis.speak(u); let b=document.getElementById('bubble'); if(b){ b.innerText=t; b.classList.add('show'); setTimeout(()=>b.classList.remove('show'),800);} }catch{} }
+class Game{
+constructor(){
+this.base=["MMA","PUNCH","JAB","CROSS","HOOK","KNOCKOUT","CHAMPION","TOYOTA","SUPRA","HONDA","CIVIC","FERRARI","BUGATTI","TURBO","DRIFT","SPEED","POWER","FIGHTER","PESHAWAR","PAKISTAN","MASTER","LEGEND","PRO","KING","RACING","ENGINE","FAST","WIN","BEST","TOP","FIRE","BOOM","WOW","EPIC","ULTRA","VICTORY"];
+this.words=[];for(let i=0;i<20000;i++){let w=this.base[Math.floor(Math.random()*this.base.length)];if(Math.random()>0.5)w+=' '+this.base[Math.floor(Math.random()*this.base.length)];this.words.push(w)}
+this.sentences=[];let s1=["TOYOTA SUPRA IS","HONDA CIVIC IS","MMA FIGHTER IS","SPEED IS POWER","THIS CAR IS","THE LEGEND IS","RACING IS LIFE"];let s2=["VERY FAST","SUPER POWERFUL","THE CHAMPION","TURBO CHARGED","DRIFT MASTER","KNOCKOUT PUNCH","BEST IN WORLD","READY TO RACE"];for(let i=0;i<10000;i++){this.sentences.push(s1[i%s1.length]+' '+s2[Math.floor(Math.random()*s2.length)])}
+this.list=this.words;this.cur="";this.pos=0;this.score=0;this.streak=0;this.total=0;this.wrong=0;this.times=[];this.last=0;this.used=new Set();
+this.appTexts=["BOOM!","WOW!","FIRE!","EPIC!","NICE!","PERFECT!","GREAT!","AWESOME!","GOOD JOB!","EXCELLENT!","WELL DONE!","VICTORY!","LEGEND!"];
+try{this.audio=new(window.AudioContext||window.webkitAudioContext)()}catch{}
+this.initKeys();this.newTask();
+}
+beep(f,d){ if(!soundOn) return; try{let o=this.audio.createOscillator(),g=this.audio.createGain();o.connect(g);g.connect(this.audio.destination);o.frequency.value=f;g.gain.value=0.12;o.start();o.stop(this.audio.currentTime+d)}catch{}}
+initKeys(){
+let layout=[["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
+let kb=document.getElementById('kb'); kb.innerHTML=''; layout.forEach(r=>{let row=document.createElement('div');row.className='row';r.forEach(k=>{let el=document.createElement('div');el.className='key';el.dataset.k=k;el.textContent=k;el.onmousedown=()=>this.handle(k);el.ontouchstart=e=>{e.preventDefault();this.handle(k)};row.appendChild(el)});kb.appendChild(row)});
+let sr=document.createElement('div');sr.className='space-row';let sp=document.createElement('div');sp.className='key space';sp.dataset.k=' ';sp.textContent='—  SPACE  —';sp.onmousedown=()=>this.handle(' ');sp.ontouchstart=e=>{e.preventDefault();this.handle(' ')};sr.appendChild(sp);kb.appendChild(sr);
+window.addEventListener('keydown',e=>{if(document.getElementById('step4').classList.contains('hidden')) return; if(e.code==='Space'){e.preventDefault();this.handle(' ')}else if(e.key.length===1){this.handle(e.key.toUpperCase())}});
+}
+newTask(){if(this.used.size>this.list.length-20)this.used.clear();let w;do{w=this.list[Math.floor(Math.random()*this.list.length)]}while(this.used.has(w));this.used.add(w);this.cur=w;this.pos=0;this.last=performance.now();this.render()}
+render(){let t=document.getElementById('task');t.innerHTML='';[...this.cur].forEach((c,i)=>{let s=document.createElement('span');s.className=i<this.pos?'done':i===this.pos?'now':'next';s.textContent=c===' '?' ':c;t.appendChild(s)});document.querySelectorAll('.key').forEach(k=>k.classList.remove('red'));let need=this.cur[this.pos];if(!need)return;let sel=need===' '?'.key.space':`.key[data-k="${need}"]`;document.querySelector(sel)?.classList.add('red');document.getElementById('barFill').style.width=(this.pos/this.cur.length*100)+'%'}
+handle(k){if(!this.cur[this.pos])return;let need=this.cur[this.pos];let now=performance.now();let diff=now-this.last;this.times.push(diff);if(this.times.length>10)this.times.shift();this.last=now;this.total++;
+if(k===need){
+if(need!==' ')speak(need);
+this.beep(900,0.07);let el=document.querySelector(need===' '?'.key.space':`.key[data-k="${k}"]`);if(el){el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),90)}this.pos++;
+if(this.pos>=this.cur.length){
+this.score++;this.streak++;document.getElementById('score').innerText=this.score;document.getElementById('streak').innerText=this.streak;this.beep(1200,0.25);this.showApp();
+setTimeout(()=>speak(this.cur),250);
+setTimeout(()=>speak('Good Job! Excellent! Well Done!'),1100);
+let avg=this.times.reduce((a,b)=>a+b,0)/this.times.length;let wpm=Math.round(60000/avg/5);document.getElementById('wpm').innerText=wpm;
+let acc=this.total>0?Math.round((this.total-this.wrong)/this.total*100):100;document.getElementById('acc').innerText=acc+'%';
+setTimeout(()=>this.newTask(),900);
+}else{this.render()}
+}else{this.wrong++;this.streak=0;document.getElementById('streak').innerText='0';this.beep(180,0.25);let acc=this.total>0?Math.round((this.total-this.wrong)/this.total*100):100;document.getElementById('acc').innerText=acc+'%';}
+}
+showApp(){let el=document.getElementById('app');el.innerText=this.appTexts[Math.floor(Math.random()*this.appTexts.length)];el.classList.remove('show');void el.offsetWidth;el.classList.add('show')}
+}
+document.getElementById('bVoice').onclick=e=>{ toggleVoice(); }
+document.getElementById('bSound').onclick=e=>{ toggleSound(); }
+document.getElementById('bHome').onclick=()=>{ goStep(1); speak('Home'); }
+</script>
+</body>
+</html>
